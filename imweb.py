@@ -22,7 +22,9 @@ def index():
 
 @app.route('/show/')
 def show():
-	request.args.get('link',0,type=string)
+#	return file_path
+	return render_template('show.html',img_link=\
+	url_for('static',filename=request.args.get('path')))
 
 @app.route('/ls/')
 def list_file():
@@ -34,9 +36,8 @@ def list_file():
 			full_path=path.join(root,filename)
 			if allowed_files(filename):
 				output=output+'''<p><a href="{link}">{name}</a></p>'''\
-				.format(link=url_for('static',filename=full_path),name=filename)
+				.format(link=url_for("show",path=full_path),name=filename)
 	return output
-
 
 if __name__ == '__main__':
 	app.run(host="0.0.0.0",port=5000,debug=True)
