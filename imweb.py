@@ -23,8 +23,12 @@ def index():
 @app.route('/show/')
 def show():
 #	return file_path
+	filepath=request.args.get('path')
+	from improc import improc
+	import os.path as op
+	filepath=op.basename(improc(filepath))
 	return render_template('show.html',img_link=\
-	url_for('static',filename=request.args.get('path')))
+	url_for('static',filename=filepath))
 
 @app.route('/ls/')
 def list_file():
