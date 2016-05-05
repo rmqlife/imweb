@@ -1,4 +1,4 @@
-from flask import Flask,request,render_template,url_for,redirect
+from flask import Flask,request,render_template,url_for,redirect,send_file
 app=Flask(__name__)
 
 LIB_FOLDER='pics'
@@ -10,13 +10,17 @@ def allowed_files(filename):
 
 @app.route('/')
 def index():
-	return render_template("index.html") 
+	return render_template("index.html") + list_file()
 
 @app.route('/show/')
 def show():
 #	return file_path
 	path = request.args.get('path')
-	return render_template('show.html',file_path = path, img_link = url_for('static',filename = path))
+	return send_file(path,mimetype='image')
+
+@app.route('/pic/')
+def pic():
+    return 
 
 @app.route('/ls/')
 def list_file():
