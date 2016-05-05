@@ -12,15 +12,16 @@ def allowed_files(filename):
 def index():
 	return render_template("index.html") + list_file()
 
-@app.route('/show/')
-def show():
+@app.route('/img/')
+def img():
 #	return file_path
 	path = request.args.get('path')
 	return send_file(path,mimetype='image')
 
-@app.route('/pic/')
-def pic():
-    return 
+@app.route('/show/')
+def show():
+    path = request.args.get('path')
+    return render_template("show.html",file_path = path, img_link = url_for('img', path = path) )
 
 @app.route('/ls/')
 def list_file():
