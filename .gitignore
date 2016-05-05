@@ -1,2 +1,4 @@
 static/
 *.pyc
+*.swp
+*.swo
