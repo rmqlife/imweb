@@ -8,25 +8,28 @@ ALLOWED_EXTENSIONS=set(['jpg','bmp','jpeg','png'])
 def allowed_files(filename):
 	return '.' in filename and filename.rsplit('.',1)[1].lower() in ALLOWED_EXTENSIONS
 
+# index page
 @app.route('/')
 def index():
 	return render_template("index.html") + list_file()
 
+# return the img file content
 @app.route('/img/')
 def img():
-#	return file_path
 	path = request.args.get('path')
 	return send_file(path,mimetype='image')
 
+# show image with other data
 @app.route('/show/')
 def show():
     path = request.args.get('path')
-    return render_template("show.html",file_path = path, img_link = url_for('img', path = path) )
+    return render_template("show.html", file_path = path, img_link = url_for('img', path = path) )
 
+# show the file list
 @app.route('/ls/')
 def list_file():
-	output=""
-	print app.config['LIB_FOLDER']
+    # response string
+	output = ""
 	from os import walk, path
 	for root,dirs,files in walk(app.config['LIB_FOLDER']):
 		for filename in files:
