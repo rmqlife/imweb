@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>play and fun</title>
+    <script>
+      function count_rabbits() {
+        for (var i=1; i<=3; i++){
+          alert("Rabbit"+i+" out of the hat!");
+        }
+      }
+    </script>
+    <script>
+    function drawline() {
+        var canvas = new fabric.Canvas('c', { selection: false });
+
+        var line, isDown;
+
+        canvas.on('mouse:down', function(o){
+          isDown = true;
+          var pointer = canvas.getPointer(o.e);
+          var points = [ pointer.x, pointer.y, pointer.x, pointer.y ];
+          line = new fabric.Line(points, {
+            strokeWidth: 5,
+            fill: 'red',
+            stroke: 'red',
+            originX: 'center',
+            originY: 'center'
+          });
+          canvas.add(line);
+        });
+
+        canvas.on('mouse:move', function(o){
+          if (!isDown) return;
+          var pointer = canvas.getPointer(o.e);
+          line.set({ x2: pointer.x, y2: pointer.y });
+          canvas.renderAll();
+        });
+
+        canvas.on('mouse:up', function(o){
+          isDown = false;
+        });
+     }
+    </script>
+  </head>
+  <body>
+    <h1> Play </h1>
+    <h2> and </h2>
+    <h3> fun </h3>
+    <p>
+      <a href="/">Index</a>
+    </p>
+    
+    
+    <input type="button" onclick="count_rabbits()" value="Count rabbits!"/>
+    <canvas id="c" width="500" height="500" style="border:2px solid #ccc"></canvas>
+      
+
+  </body>
+</html>

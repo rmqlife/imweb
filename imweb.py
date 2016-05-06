@@ -32,6 +32,7 @@ def img():
 @app.route('/show/')
 def show():
     path = request.args.get('path')
+    # find the prev and next path of the current file
     for idx, elem in enumerate(IMGS):
         if elem == path:
             next_path = IMGS[(idx + 1)%len(IMGS)]
@@ -49,5 +50,9 @@ def list_file():
         .format(link=url_for("show",path = p),name = p)
     return output
 
+# a javascript test page
+@app.route('/play/')
+def play():
+    return render_template("play.html")
 if __name__ == '__main__':
 	app.run(host="0.0.0.0",port=5000,debug=True)
