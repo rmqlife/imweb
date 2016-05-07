@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <!--
+        Created using JS Bin
+        http://jsbin.com
+
+        Copyright (c) 2014 by anonymous (http://jsbin.com/todurezeqo/1/edit)
+
+        Released under the MIT license: http://jsbin.mit-license.org
+      -->
+    <meta name="robots" content="noindex">
+    <title>JS Bin</title>
+
+    <style id="jsbin-css">
+      #canvas {
+      margin: 5px 0 0 5px;
+      min-height: 960px;
+      width: 600px;
+      position: relative;
+      display: inline-block;
+      -webkit-user-select: none;
+      background-size: 100% auto;
+      background-repeat: no-repeat;
+      }
+      #mask {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      border: 3px dashed blue;
+      box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+
+      }
+
+      #form {
+      display: inline-block;
+      vertical-align: top;
+
+      }
+    </style>
+  </head>
+  <body>
+    <div id="canvas" style='background-image:url("{{ url_for('static', filename=img) }}")'>
+      <div id="mask"></div>
+    </div>
+    <div id="form">
+    <form method="POST" action="/">
+      <input name="file" value="{{ img }}" style="display:none"/>
+      <p>
+        <label>X0:</label><input name="x0" type="text" />
+      </p>
+      <p>
+        <label>Y0:</label><input name="y0" type="text" />
+      </p>
+      <p>
+        <label>X1:</label><input name="x1" type="text" />
+      </p>
+      <p>
+        <label>Y1:</label><input name="y1" type="text" />
+      </p>
+      <p>
+        <input type="submit" value="Submit" />
+      </p>
+    </form>
+    <form action="/" method="POST">
+      <input type="text" name="skip" style="display:none">
+      <input type="text" name="file" value="{{ img }}" style="display:none">
+      <input type="submit" value="Skip">
+    </form>
+    </div>
+    <script>
+      (function(){
+      var canvas = document.getElementById("canvas"),
+      mask = document.getElementById("mask");
+      console.log("run"); canvas.addEventListener("mousedown", function(e) {
+      dispatch(e);
+
+      });
+      canvas.addEventListener("mouseup", function(e) {
+      dispatch(e);
+
+      });
+      canvas.addEventListener("mousemove", function(e) {
+      dispatch(e);
+
+      });
+
+
+      function State() {
+      this._stopped = true;
+
+      }
+      State.prototype.move = function(e) {
+      if (this._stopped) return;
+      var _ = this.onMove && this.onMove(e);
+
+      };
+      State.prototype.down = function(e) {
+      if (!this._stopped) return;
+      this._stopped = false;
+      var _ = this.onDown && this.onDown(e);
+
+      };
+      State.prototype.up = function(e) {
+      if (this._stopped) return;
+      this._stopped = true;
+      var _ = this.onUp && this.onUp(e);
+
+      };
+      var state = new State();
+      function dispatch(e){
+      switch (e.type){
+      case "mousemove":
+      state.move(e);
+      break;
+      case "mousedown":
+      state.down(e);
+      break;
+      case "mouseup":
+      state.up(e);
+      break;
+
+      }
+
+      }
+      var x0 = canvas.getBoundingClientRect().left,
+      y0 = canvas.getBoundingClientRect().top;
+      state.onUp = function(e) {
+      this.onFinish(mask.dataLeft, mask.dataTop, e.pageX - x0, e.pageY - y0);
+
+      };
+      state.onDown = function(e) {
+      mask.dataLeft = e.pageX - x0;
+      mask.dataTop = e.pageY - y0;
+      mask.style.top = (e.pageY - y0) + "px";
+      mask.style.left = (e.pageX - x0) + "px";
+      mask.style.width = "0px";
+      mask.style.height = "0px";
+
+      };
+      state.onMove = function(e) {
+      mask.style.width = (e.pageX - x0) - mask.dataLeft + "px";
+      mask.style.height = (e.pageY - y0) - mask.dataTop + "px";
+      update("x0", mask.dataLeft);
+      update("y0", mask.dataTop);
+      update("x1", e.pageX - x0);
+      update("y1", e.pageY - y0);
+
+      };
+
+      state.onFinish = function(x0, y0, x1, y1) {
+
+      update("x0", x0);
+      update("y0", y0);
+      update("x1", x1);
+      update("y1", y1);
+
+      };
+      function update(name, value) {
+      document.querySelector("input[name=" + name + "]").value = value + "/" + canvas.getBoundingClientRect().width;
+      }
+      })();
+    </script>
+  </body>
+</html>
